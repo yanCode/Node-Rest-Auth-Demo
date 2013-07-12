@@ -34,3 +34,4 @@ module.exports = (grunt)->
           console.log 'Successfully dropped db'
           done()
 
+  grunt.registerTask('default', ['dbinit']);
