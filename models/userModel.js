@@ -7,7 +7,7 @@
 var mongoose = require('mongoose')
     , uuid = require('node-uuid')
     , Schema = mongoose.Schema
-    , ObjectId = Schema.ObjectId
+    , ObjectId = mongoose.Schema.ObjectId
     , userSchema
     , authSchema
     , USER_ROLES = 'user,admin'.split(',');
@@ -100,7 +100,7 @@ userSchema.statics = {
 authSchema = new Schema({
     user: {
         type: ObjectId,
-        refer: 'User'
+        ref: 'User'
     },
     authKey: {
         type: String,
@@ -109,7 +109,7 @@ authSchema = new Schema({
     },
     effectiveDate: {type: Date,
         default: Date.now,
-        expires: '60' //expiresAfterSeconds, creating a TTL index to ensure when expiry, this record will be removed by monogoDB
+        expires: '1800' //expiresAfterSeconds, creating a TTL index to ensure when expiry, this record will be removed by monogoDB
     }
 });
 authSchema.methods = {
@@ -143,6 +143,26 @@ authSchema.statics = {
         auth.save(function (err) {
             done(err, authKey);
         });
+    },
+    /**
+     * get the logged user by authKey
+     * @param authKey
+     * @param done {Function}  callback function,
+     *                          err: if any system error.
+     *                          user: fetched user, if found, else null will be returned.
+     */
+    getLoggedUser: function (authKey, done) {
+        var Auth = this;
+        Auth.findOne({authKey: authKey})
+            .populate('user')
+            .exec(function (err, auth) {
+                var user;
+                if (auth) {
+//                    auth.updateEffectiveDate();
+                    user = auth.user;
+                }
+                done(err, user);
+            })
     }
 };
 

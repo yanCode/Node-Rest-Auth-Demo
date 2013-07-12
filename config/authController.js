@@ -7,6 +7,45 @@ var mongoose = require('mongoose')
 var authController = function (app) {
 
     /**
+     * validate the authKey when an API is requested, by default only '/api/login' doesn't require authorized access.
+     */
+    app.all('/api/*', function (req, res, next) {
+
+        //if it's login API, let it go.
+        if (req.method === 'POST' && req.url.indexOf('/api/login') === 0) {
+            return next();
+        }
+        var authKey = req.header('authKey');
+
+        //if request without authKey
+        if (!authKey) {
+            res.json(403, {message: 'please provide your authKey.'});
+        }
+        //get this user by autKey.
+        Auth.getLoggedUser(authKey, function (err, user) {
+            if (err) {
+                return res.json(500, err);
+            }
+            if (!user) {
+                res.json(403, {message: 'You authKey is invalid.'});
+            }
+            req.user = user;
+            return next();
+        })
+    });
+
+    /**
+     * this function is aim to valid the api starts with '/api/admin/' should be accessed by the user whose role is admin.
+     */
+    app.all('/api/admin/*', function (req, res, next) {
+        if (req.user && req.user.role === 'admin') {
+            return next();
+        }
+        //remind the role is incorrect.
+        return  res.json(403, {message: 'only admin role can access this api.'});
+    });
+
+    /**
      * if authKey for this user has been in the database, delete it first.
      *
      * @param res {object} Express Http response.
@@ -65,10 +104,6 @@ var authController = function (app) {
             }
         });
     });
-
-    app.use("/*", function (req, res) {
-
-    })
 
 
 };
