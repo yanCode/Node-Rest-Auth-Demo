@@ -11,8 +11,8 @@ var authController = function (app) {
      */
     app.all('/api/*', function (req, res, next) {
 
-        //if it's login API, let it go.
-        if (req.method === 'POST' && req.url.indexOf('/api/login') === 0) {
+        //if it's login/logout API, let it go.
+        if (req.method === 'POST' && req.url.indexOf('/api/log') === 0) {
             return next();
         }
         var authKey = req.header('authKey');
@@ -59,7 +59,7 @@ var authController = function (app) {
                 if (err) {
                     return res.json(500, err);
                 }
-                return res.json(200, authKey);
+                return res.json(200, {authKey: authKey});
 
             });
         };
@@ -103,6 +103,20 @@ var authController = function (app) {
                 getAuthKey(res, userId);
             }
         });
+    });
+
+    /**
+     * logoff function.
+     */
+    app.post('/api/logout', function (req, res) {
+        var authKey = req.header('authKey');
+        Auth.remove({authKey: authKey}, function (err) {
+            if (err) {
+                res.json(500, err);
+            } else {
+                return res.json(200, {status: 'successfully logout'});
+            }
+        }); //end Auth.remove()
     });
 
 
