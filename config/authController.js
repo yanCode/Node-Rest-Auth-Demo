@@ -28,17 +28,17 @@ var authController = function (app) {
         /**
          * try to find if the authKey for this user exits.
          */
-        Auth.findOne({user: userId}, function (err, authKey) {
-            if (err) return res.json(500, err);
-            //if authkey for this user already exists, remove it.
-            if (authKey) {
-                authKey.remove(function () {
-                    addAuthKey(res, userId);
-                });
-            } else {
+        Auth.find({user: userId})
+            .exec(function (err, auths) {
+                if (err) return res.json(500, err);
+                //if the authkey for this user already exists, remove it.
+                if (auths.length > 0) {
+                    auths.forEach(function (auth) {
+                        auth.remove();
+                    })
+                }
                 addAuthKey(res, userId);
-            }
-        });
+            });
 
     };
 

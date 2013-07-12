@@ -138,7 +138,7 @@ authSchema.statics = {
     addAuthKey: function (userId, done) {
         var Auth = this,
         //using time-based uuid as authKey.
-            authKey = uuid.v1(),
+            authKey = uuid.v4(),
             auth = new Auth({user: userId, authKey: authKey});
         auth.save(function (err) {
             done(err, authKey);
