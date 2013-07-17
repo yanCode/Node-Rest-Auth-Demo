@@ -10,7 +10,8 @@ var mongoose = require('mongoose')
     , ObjectId = mongoose.Schema.ObjectId
     , userSchema
     , authSchema
-    , USER_ROLES = 'user,admin'.split(',');
+    , USER_ROLES = 'user,admin'.split(',')
+    , DEFAULT_EXPIRE_TIME='1h';// 1 hour.
 
 /**
  * userSchema.
@@ -109,7 +110,7 @@ authSchema = new Schema({
     },
     effectiveDate: {type: Date,
         default: Date.now,
-        expires: '1800' //expiresAfterSeconds, creating a TTL index to ensure when expiry, this record will be removed by monogoDB
+        expires: DEFAULT_EXPIRE_TIME //expiresAfterSeconds, creating a TTL index to ensure when expiry, this record will be removed by monogoDB
     }
 });
 authSchema.methods = {

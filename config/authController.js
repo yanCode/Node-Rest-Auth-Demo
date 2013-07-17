@@ -27,7 +27,7 @@ var authController = function (app) {
                 return res.json(500, err);
             }
             if (!user) {
-                res.json(403, {message: 'You authKey is invalid.'});
+                res.json(403, {message: 'Your authKey is invalid.'});
             }
             req.user = user;
             return next();
