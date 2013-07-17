@@ -20,9 +20,12 @@ To play this app
 
 1. login:
      curl -i -X POST -d "username=yan&password=secret" http://localhost:8080/api/login  (an authKey is returned if logging sccuessfully)
+
 2. Access an API
-    curl -i -H "authKey: YOUR_RETURNED_AUTHKEY" -X GET  http://localhost:8080/api/time
-3. Access an API requiring admin privilege, so please using boss:secrect login first.
-   curl -i -H "authKey: YOUR_RETURNED_AUTHKEY" -X GET  http://localhost:8080/api/admin/time
-4.Logout:
-  curl -i -H "authKey: YOUR_RETURNED_AUTHKEY" -X POST  http://localhost:8080/api/logout
+     curl -i -H "authKey: YOUR_RETURNED_AUTHKEY" -X GET  http://localhost:8080/api/time
+
+3. Access an API requiring admin privilege, so please using boss:secrect login first
+     curl -i -H "authKey: YOUR_RETURNED_AUTHKEY" -X GET  http://localhost:8080/api/admin/time
+
+4. Logout
+    curl -i -H "authKey: YOUR_RETURNED_AUTHKEY" -X POST  http://localhost:8080/api/logout
